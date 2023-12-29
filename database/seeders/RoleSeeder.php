@@ -24,7 +24,11 @@ class RoleSeeder extends Seeder
         $role_manager = Role::create([
             'name' => 'manager'
         ]);
-
+        
+        $role_supervisor = Role::create([
+            'name' => 'supervisor'
+        ]);
+        
         $role_warehouse_staff = Role::create([
             'name' => 'warehouse-staff'
         ]);
@@ -32,5 +36,6 @@ class RoleSeeder extends Seeder
         $role_cashier = Role::create([
             'name' => 'cashier'
         ]);
+
     }
 }
