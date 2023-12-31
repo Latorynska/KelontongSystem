@@ -15,7 +15,7 @@ class BrandSeeder extends Seeder
     {
         //
         $JayusmanStore = Brand::create([
-            "nama" => "Jayusman Store",
+            "name" => "Jayusman Store",
             "user_id" => "2"
         ]);
     }

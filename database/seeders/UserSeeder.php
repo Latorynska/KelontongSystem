@@ -34,8 +34,8 @@ class UserSeeder extends Seeder
         ]);
         $owner->assignRole('owner');
 
-        $manager_a = User::create([
-            'name' => 'Admin',
+        $manager_a = User::create([ //3
+            'name' => 'Manager A',
             'email' => 'manager_a@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -44,8 +44,8 @@ class UserSeeder extends Seeder
         ]);
         $manager_a->assignRole('manager');
         
-        $manager_b = User::create([
-            'name' => 'Admin',
+        $manager_b = User::create([ //4
+            'name' => 'Manager B',
             'email' => 'manager_b@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -54,8 +54,8 @@ class UserSeeder extends Seeder
         ]);
         $manager_b->assignRole('manager');
 
-        $manager_c = User::create([
-            'name' => 'Admin',
+        $manager_c = User::create([ //5
+            'name' => 'Manager C',
             'email' => 'manager_c@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -64,8 +64,8 @@ class UserSeeder extends Seeder
         ]);
         $manager_c->assignRole('manager');
 
-        $manager_d = User::create([
-            'name' => 'Admin',
+        $manager_d = User::create([ //6
+            'name' => 'Manager D',
             'email' => 'manager_d@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -74,8 +74,8 @@ class UserSeeder extends Seeder
         ]);
         $manager_d->assignRole('manager');
 
-        $manager_e = User::create([
-            'name' => 'Admin',
+        $manager_e = User::create([ //7
+            'name' => 'Manager E',
             'email' => 'manager_e@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
