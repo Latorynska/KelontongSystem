@@ -49,6 +49,7 @@ Route::group(['middleware' => ['role:owner']], function () {
         ->name('branch')
         ->group(function(){
             Route::get('/', [BranchController::class, 'index']);
+            Route::get('/create', [BranchController::class, 'create'])->name('.create');
         }
     );
 });

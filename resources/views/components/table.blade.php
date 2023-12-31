@@ -1,5 +1,5 @@
 <div x-data="initPagination({!! htmlspecialchars(json_encode($data)) !!})" {{ $attributes }}>
-    <div class="py-3 px-4">
+    <div class="py-3 px-4 flex items-center justify-between">
         <!-- Search input -->
         <div class="relative max-w-xs">
             <label for="hs-table-search" class="sr-only">Search</label>
@@ -8,6 +8,7 @@
                 <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
         </div>
+        {{ $newData }}
     </div>
 
     <!-- Table Header Slot -->

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Brand extends Model
 {
     use HasFactory;
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -17,7 +18,8 @@ class Brand extends Model
     {
         return $this->hasMany(Branch::class);
     }
-    public function staffCount()
+
+    public function branchStaff()
     {
         return $this->hasManyThrough(
             BranchStaff::class,
@@ -27,5 +29,14 @@ class Brand extends Model
             'id',
             'id'
         );
+    }
+
+    public function managers()
+    {
+        return $this->branchStaff()
+            ->with('user') // Eager load the related User model
+            ->whereHas('user.roles', function ($query) {
+                $query->where('name', 'manager');
+            });
     }
 }

@@ -6,11 +6,13 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex items-center justify-between p-2 text-lg font-bold">
                         <span>{{ $brand->name."'s Branches" }}</span>
-                        <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">                            
-                            Add Branch
-                        </button>
                     </div>
-                    <x-table :data="$branches">
+                    <x-table :data="$branches" linkNewData="brand">
+                        <x-slot name="newData">
+                            <x-button-link :href="route('branch.create')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
+                                Add Data
+                            </x-button-link>
+                        </x-slot>
                         <!-- Table Header -->
                         <x-slot name="header">
                             <tr>

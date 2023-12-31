@@ -41,8 +41,15 @@ class BranchController extends Controller
      */
     public function create()
     {
-        //
+        $ownerId = Auth::id();
+        $brand = Brand::with('branches')->where('user_id', $ownerId)->first();
+        
+        // Access managers through the relationship
+        $managers = $brand->managers;
+
+        return view('branch.create', compact('managers'));
     }
+
 
     /**
      * Store a newly created resource in storage.
