@@ -84,8 +84,8 @@ class UserSeeder extends Seeder
         ]);
         $manager_e->assignRole('manager');
 
-        $kasir_a = User::create([
-            'name' => 'Admin',
+        $kasir_a = User::create([ // 8
+            'name' => 'Kasir A',
             'email' => 'kasir_a@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -94,8 +94,8 @@ class UserSeeder extends Seeder
         ]);
         $kasir_a->assignRole('cashier');
 
-        $kasir_b = User::create([
-            'name' => 'Admin',
+        $kasir_b = User::create([ // 9 
+            'name' => 'Kasir B',
             'email' => 'kasir_b@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -104,8 +104,8 @@ class UserSeeder extends Seeder
         ]);
         $kasir_b->assignRole('cashier');
 
-        $kasir_c = User::create([
-            'name' => 'Admin',
+        $kasir_c = User::create([ // 10
+            'name' => 'Kasir C',
             'email' => 'kasir_c@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -114,8 +114,8 @@ class UserSeeder extends Seeder
         ]);
         $kasir_c->assignRole('cashier');
 
-        $kasir_d = User::create([
-            'name' => 'Admin',
+        $kasir_d = User::create([ // 11
+            'name' => 'Kasir D',
             'email' => 'kasir_d@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -124,8 +124,8 @@ class UserSeeder extends Seeder
         ]);
         $kasir_d->assignRole('cashier');
 
-        $kasir_e = User::create([
-            'name' => 'Admin',
+        $kasir_e = User::create([ // 12
+            'name' => 'Kasir E',
             'email' => 'kasir_e@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -134,8 +134,8 @@ class UserSeeder extends Seeder
         ]);
         $kasir_e->assignRole('cashier');
 
-        $warehouse_a = User::create([
-            'name' => 'Admin',
+        $warehouse_a = User::create([ // 13
+            'name' => 'staff gudang A',
             'email' => 'warehouse_a@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -144,8 +144,8 @@ class UserSeeder extends Seeder
         ]);
         $warehouse_a->assignRole('warehouse-staff');
 
-        $warehouse_b = User::create([
-            'name' => 'Admin',
+        $warehouse_b = User::create([ // 14
+            'name' => 'staff gudang B',
             'email' => 'warehouse_b@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -154,8 +154,8 @@ class UserSeeder extends Seeder
         ]);
         $warehouse_b->assignRole('warehouse-staff');
 
-        $warehouse_c = User::create([
-            'name' => 'Admin',
+        $warehouse_c = User::create([ // 15
+            'name' => 'staff gudang C',
             'email' => 'warehouse_c@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -164,8 +164,8 @@ class UserSeeder extends Seeder
         ]);
         $warehouse_c->assignRole('warehouse-staff');
 
-        $warehouse_d = User::create([
-            'name' => 'Admin',
+        $warehouse_d = User::create([ // 16
+            'name' => 'staff gudang D',
             'email' => 'warehouse_d@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -174,8 +174,8 @@ class UserSeeder extends Seeder
         ]);
         $warehouse_d->assignRole('warehouse-staff');
 
-        $warehouse_e = User::create([
-            'name' => 'Admin',
+        $warehouse_e = User::create([ // 17
+            'name' => 'staff gudang E',
             'email' => 'warehouse_e@kelontongs.com',
             'email_verified_at' => now(),
             'password' => Hash::make('Password123'),
@@ -183,6 +183,56 @@ class UserSeeder extends Seeder
             'updated_at' => now(),
         ]);
         $warehouse_e->assignRole('warehouse-staff');
+
+        $supervisor_a = User::create([ // 18
+            'name' => 'Supervisor A',
+            'email' => 'supervisor_a@kelontongs.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('Password123'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $supervisor_a->assignRole('supervisor');
+
+        $supervisor_b = User::create([ // 19
+            'name' => 'Supervisor B',
+            'email' => 'supervisor_b@kelontongs.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('Password123'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $supervisor_b->assignRole('supervisor');
+
+        $supervisor_c = User::create([ // 20
+            'name' => 'Supervisor C',
+            'email' => 'supervisor_c@kelontongs.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('Password123'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $supervisor_c->assignRole('supervisor');
+
+        $supervisor_d = User::create([ // 21
+            'name' => 'Supervisor D',
+            'email' => 'supervisor_d@kelontongs.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('Password123'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $supervisor_d->assignRole('supervisor');
+
+        $supervisor_e = User::create([ // 22
+            'name' => 'Supervisor E',
+            'email' => 'supervisor_e@kelontongs.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('Password123'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $supervisor_e->assignRole('supervisor');
 
     }
 }

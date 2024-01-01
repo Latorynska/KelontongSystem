@@ -30,7 +30,17 @@ class Brand extends Model
             'id'
         );
     }
-
+    public function staffCount()
+    {
+        return $this->hasManyThrough(
+            BranchStaff::class,
+            Branch::class,
+            'brand_id',
+            'branch_id',
+            'id',
+            'id'
+        );
+    }
     public function managers()
     {
         return $this->branchStaff()
