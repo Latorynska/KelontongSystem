@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             BranchSeeder::class,
             BranchStaffSeeder::class,
+            BrandStaffSeeder::class,
         ]);
     }
 }

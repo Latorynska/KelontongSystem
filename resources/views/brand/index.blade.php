@@ -49,7 +49,19 @@
                             </div>
                             <div class="w-7/12">
                                 <p class="text-gray-500 dark:text-gray-400 ml-2">
-                                    {{ $brand[0]->staff_count }}
+                                    {{ $brand[0]->brand_staff_count }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-4 flex">
+                            <div class="w-2/12">
+                                <p class="text-gray-500 dark:text-gray-400">
+                                    Active Branch Staff
+                                </p>
+                            </div>
+                            <div class="w-7/12">
+                                <p class="text-gray-500 dark:text-gray-400 ml-2">
+                                    {{ $brand[0]->branch_staff_count }}
                                 </p>
                             </div>
                         </div>

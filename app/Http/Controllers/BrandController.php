@@ -15,8 +15,8 @@ class BrandController extends Controller
     {
         $owner_id = Auth::user()->id;
 
-        $data['brand'] = Brand::with(['user', 'branches', 'staffCount'])
-            ->withCount(['branches as branches_count', 'staffCount as staff_count'])
+        $data['brand'] = Brand::with(['user', 'branches', 'branchStaff', 'brandStaff'])
+            ->withCount(['branches as branches_count', 'branchStaff as branch_staff_count', 'brandStaff as brand_staff_count'])
             ->where('user_id', $owner_id)
             ->get();
 

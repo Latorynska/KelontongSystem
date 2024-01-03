@@ -1,4 +1,4 @@
-<div x-data="initPagination({!! htmlspecialchars(json_encode($data)) !!})" {{ $attributes }}>
+<div x-data="initPagination({!! htmlspecialchars(json_encode($data)) !!}, {!! htmlspecialchars($filterFields) !!})" {{ $attributes }}>
     <div class="py-3 px-4 flex items-center justify-between">
         <!-- Search input -->
         <div class="relative max-w-xs">
@@ -40,7 +40,6 @@
         </nav>
     </div>
 </div>
-
 <script>
     function getPaginationRange(totalItems, itemsPerPage, currentPage) {
         const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -58,10 +57,17 @@
 
     function paginateData(data, itemsPerPage, currentPage) {
         const startIndex = (currentPage - 1) * itemsPerPage;
-        return data.slice(startIndex, startIndex + itemsPerPage);
+        const endIndex = startIndex + itemsPerPage;
+        if (startIndex >= data.length) {
+            return data;
+        }
+        return data.slice(startIndex, Math.min(endIndex, data.length));
     }
 
-    function initPagination(data) {
+    function initPagination(data, filterFields) {
+        console.log("data", data);
+        console.log("filterFields", filterFields);
+        data = data.map((row, index) => ({ ...row, number: index + 1 }));
         return {
             currentPage: 1,
             itemsPerPage: 3,
@@ -70,11 +76,12 @@
             get filteredRows() {
                 const query = this.searchQuery.toLowerCase();
                 return this.rows.filter(row => {
-                    return (
-                        row.name.toLowerCase().includes(query) ||
-                        row.manager.name.toLowerCase().includes(query) ||
-                        row.location.toLowerCase().includes(query)
-                    );
+                    return filterFields.some(field => {
+                        // Handle nested properties
+                        const properties = field.split('.');
+                        const value = properties.reduce((obj, prop) => obj && obj[prop], row);
+                        return value && value.toLowerCase().includes(query);
+                    });
                 });
             },
             get paginatedData() {

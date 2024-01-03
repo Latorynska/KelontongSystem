@@ -50,6 +50,15 @@ Route::group(['middleware' => ['role:owner']], function () {
         ->group(function(){
             Route::get('/', [BranchController::class, 'index']);
             Route::get('/create', [BranchController::class, 'create'])->name('.create');
+            Route::post('/create', [BranchController::class, 'store'])->name('.store');
+            Route::get('/{id}', [BranchController::class, 'edit'])->name('.edit');
+        }
+    );
+    
+    Route::prefix('/staff')
+        ->name('staff')
+        ->group(function(){
+            Route::get('/', [StaffController::class, 'index']);
         }
     );
 });
@@ -74,12 +83,6 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('item')
         ->group(function(){
             Route::get('/', [ItemController::class, 'index']);
-        }
-    );
-    Route::prefix('/staff')
-        ->name('staff')
-        ->group(function(){
-            Route::get('/', [StaffController::class, 'index']);
         }
     );
     Route::prefix('/transaction')

@@ -9,4 +9,9 @@ class BrandStaff extends Model
 {
     use HasFactory;
     protected $table = "brand_staffs";
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\BrandStaff;
+use App\Models\Brand;
 
 class StaffController extends Controller
 {
@@ -11,8 +15,20 @@ class StaffController extends Controller
      */
     public function index()
     {
-        //
-        return view('staff.index');
+        // Get the current user's ID
+        $ownerId = Auth::id();
+
+        // Get the user's brand with manager information and staff count
+        $brand = Brand::with([
+            'branches.manager',
+            'branches' => function ($query) {
+                $query->withCount('staff');
+            }
+        ])->where('user_id', $ownerId)->first();
+
+        $data['brand'] = $brand;
+        $data['brandStaff'] = BrandStaff::with('user')->get();
+        return view('staff.index', $data);
     }
 
     /**

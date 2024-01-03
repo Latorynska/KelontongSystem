@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Branch extends Model
 {
     use HasFactory;
-    
+    protected $fillable = ['brand_id', 'owner_id', 'name', 'location'];
+
     public function manager()
     {
         return $this->hasOneThrough(

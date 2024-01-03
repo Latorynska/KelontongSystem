@@ -55,7 +55,6 @@
                         <path d="m18 15-6-6-6 6" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                 
-                    {{-- make this one under this comment a bit lower vertically --}}
                     <svg class="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400" width="24" height="24" viewBox="-3 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M3 5L9.16086 10.6869C9.35239 10.8637 9.64761 10.8637 9.83914 10.6869L16 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
