@@ -9,6 +9,7 @@ class BrandStaff extends Model
 {
     use HasFactory;
     protected $table = "brand_staffs";
+    protected $guarded = ["id"];
     
     public function user()
     {

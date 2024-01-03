@@ -59,6 +59,8 @@ Route::group(['middleware' => ['role:owner']], function () {
         ->name('staff')
         ->group(function(){
             Route::get('/', [StaffController::class, 'index']);
+            Route::get('/create', [StaffController::class, 'create'])->name('.create');
+            Route::post('/', [StaffController::class, 'store'])->name('.store');
         }
     );
 });

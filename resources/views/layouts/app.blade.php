@@ -91,7 +91,7 @@
                 @php $list .= '<li>'.$error.'</li>'; @endphp
                 @endforeach
                 Swal.fire({
-                    type: 'error',
+                    icon: 'error',
                     title: "Ooops",
                     html: "<ul>{!! $list !!}</ul>",
                 })

@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\BrandStaff;
 use App\Models\Brand;
+use App\Models\User;
 
 class StaffController extends Controller
 {
@@ -27,7 +32,8 @@ class StaffController extends Controller
         ])->where('user_id', $ownerId)->first();
 
         $data['brand'] = $brand;
-        $data['brandStaff'] = BrandStaff::with('user')->get();
+        $data['brandStaff'] = BrandStaff::with(['user.roles', 'user.branches'])->get();
+        // dump($data['brandStaff'][19]);
         return view('staff.index', $data);
     }
 
@@ -36,7 +42,8 @@ class StaffController extends Controller
      */
     public function create()
     {
-        //
+        $data['roles'] = Role::whereNotIn('name', ['admin', 'owner'])->get();
+        return view('staff.create', $data);
     }
 
     /**
@@ -44,15 +51,69 @@ class StaffController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $notification = null;
 
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'role' => ['required', 'not_in:admin,owner'],
+            'password' => 'required|min:8|regex:/^(?=.*[A-Z])(?=.*\d).+$/',
+        ]);
+
+        // Start the database transaction
+        DB::beginTransaction();
+
+        try {
+            // Create a new user
+            $newUser = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+                'created_at' => now(),
+            ]);
+
+            // Attach the role to the new user
+            $role = Role::where('name', $request->input('role'))->first();
+
+            if ($role) {
+                $newUser->roles()->attach($role->id, ['model_type' => get_class($newUser)]);
+            }
+
+            // Get the current user's brand
+            $ownerId = Auth::id();
+            $brand = Brand::with('branches.manager')->where('user_id', $ownerId)->first();
+
+            // Add the new user to BrandStaff
+            $brandStaff = BrandStaff::create([
+                'user_id' => $newUser->id,
+                'brand_id' => $brand->id,
+            ]);
+
+            // Commit the transaction if all steps are successful
+            DB::commit();
+
+            $notification = [
+                'message' => 'User added successfully',
+                'alert-type' => 'success',
+            ];
+        } catch (\Exception $e) {
+            // Rollback the transaction if any step fails
+            DB::rollBack();
+            dd($e->getMessage());
+            $notification = [
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ];
+        }
+
+        return redirect()->route('staff')->with($notification);
+    }
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        // ...
     }
 
     /**
@@ -60,7 +121,7 @@ class StaffController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // ...
     }
 
     /**
@@ -68,7 +129,7 @@ class StaffController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // ...
     }
 
     /**
@@ -76,6 +137,6 @@ class StaffController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // ...
     }
 }

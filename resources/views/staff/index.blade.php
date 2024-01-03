@@ -7,9 +7,9 @@
                     <div class="flex items-center justify-between p-2 text-lg font-bold">
                         <span>{{ $brand->name."'s Branches" }}</span>
                     </div>
-                    <x-table :data="$brandStaff">
+                    <x-table :data="$brandStaff" :filterFields="'[\'user.name\', \'user.roles\', \'user.branches\']'">
                         <x-slot name="newData">
-                            <x-button-link :href="route('branch.create')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
+                            <x-button-link :href="route('staff.create')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
                                 Add Data
                             </x-button-link>
                         </x-slot>
@@ -19,7 +19,8 @@
                                 <th scope="col" class="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">No</th>
                                 <th scope="col" class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Name</th>
                                 <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Position</th>
-                                <th scope="col" class="px-0 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
+                                <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Staff At</th>
+                                <th scope="col" class="px-0 py-3 pe-12 text-right text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Action</th>
                             </tr>
                         </x-slot>
 
@@ -29,8 +30,23 @@
                                 <tr class="even:bg-white odd:bg-gray-100 hover:bg-gray-100 dark:even:bg-gray-800 dark:odd:bg-gray-700 dark:hover:bg-gray-700">
                                     <td x-text="index + 1 + (currentPage - 1) * itemsPerPage" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="staff.user.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                    <td x-text="staff.user.role" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                    <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
+                                    <td>
+                                        <template x-for="(role, roleIndex) in staff.user.roles" :key="roleIndex">
+                                            <span x-text="role.name" class="inline-block px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></span>
+                                        </template>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <template x-if="staff.user.branches.length === 1">
+                                            <span x-text="staff.user.branches[0].name" class="inline-block px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></span>
+                                        </template>
+                                        <template x-if="staff.user.branches.length > 1">
+                                            <span x-text="staff.user.branches.slice(0, 1).map(branch => branch.name).join(', ') + ' and ' + (staff.user.branches.length - 1) + ' more'" class="inline-block px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></span>
+                                        </template>
+                                        <template x-if="staff.user.branches.length === 0">
+                                            <span x-text="'Not Assigned'" class="inline-block px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></span>
+                                        </template>
+                                    </td>                                    
+                                    <td class="px-0 py-2 pe-8 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="hs-dropdown inline-flex">
                                             <button id="hs-dropdown-basic" type="button" class="hs-dropdown-toggle py-2.5 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                                                 Actions
@@ -77,5 +93,4 @@
             </div>
         </div>
     </div>
-
 </x-app-layout>

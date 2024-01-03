@@ -42,4 +42,16 @@ class User extends Authenticatable{
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    protected $roleTable = 'model_has_roles';
+    protected $relatedKey = 'model_id';
+
+    public function roles()
+    {
+        return $this->belongsToMany('Spatie\Permission\Models\Role', $this->roleTable, 'model_id', 'role_id');
+    }
+    
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'branch_staffs', 'user_id', 'branch_id');
+    }
 }

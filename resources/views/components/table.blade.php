@@ -65,25 +65,41 @@
     }
 
     function initPagination(data, filterFields) {
-        console.log("data", data);
-        console.log("filterFields", filterFields);
         data = data.map((row, index) => ({ ...row, number: index + 1 }));
+        console.log(data);
         return {
             currentPage: 1,
-            itemsPerPage: 3,
+            itemsPerPage: 5,
             searchQuery: '',
             rows: data,
             get filteredRows() {
                 const query = this.searchQuery.toLowerCase();
                 return this.rows.filter(row => {
                     return filterFields.some(field => {
-                        // Handle nested properties
                         const properties = field.split('.');
                         const value = properties.reduce((obj, prop) => obj && obj[prop], row);
-                        return value && value.toLowerCase().includes(query);
+
+                        if (Array.isArray(value)) {
+                            // Handle nested arrays (e.g., branches and roles)
+                            return value.some(item => {
+                                if (typeof item === 'object' && item !== null) {
+                                    // Handle nested objects within arrays
+                                    return Object.values(item).some(val => typeof val === 'string' && val.toLowerCase().includes(query));
+                                } else if (typeof item === 'string') {
+                                    return item.toLowerCase().includes(query);
+                                }
+                                return false;
+                            });
+                        } else if (typeof value === 'string') {
+                            // Handle string values
+                            return value.toLowerCase().includes(query);
+                        }
+
+                        return false;
                     });
                 });
             },
+
             get paginatedData() {
                 return paginateData(this.filteredRows, this.itemsPerPage, this.currentPage);
             },
