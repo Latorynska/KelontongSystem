@@ -61,6 +61,9 @@ Route::group(['middleware' => ['role:owner']], function () {
             Route::get('/', [StaffController::class, 'index']);
             Route::get('/create', [StaffController::class, 'create'])->name('.create');
             Route::post('/', [StaffController::class, 'store'])->name('.store');
+            Route::get('/{id}', [StaffController::class, 'edit'])->name('.edit');
+            Route::patch('/{id}', [StaffController::class, 'update'])->name('.update');
+            Route::delete('/{id}', [StaffController::class, 'destroy'])->name('.delete');
         }
     );
 });

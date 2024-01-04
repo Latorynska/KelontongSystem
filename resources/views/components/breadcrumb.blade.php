@@ -14,7 +14,7 @@
     @endphp
 
         <li class="inline-flex items-center">
-            <a href="{{ route($url) }}" class="flex items-center text-sm text-gray-200 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:focus:text-blue-500">
+            <a class="flex items-center text-sm text-gray-200 focus:outline-none focus:text-blue-600 dark:focus:text-blue-500">
                 {{ $title }}
             </a>
             

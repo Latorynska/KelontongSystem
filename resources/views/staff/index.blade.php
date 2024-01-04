@@ -57,14 +57,20 @@
                                             <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 w-min hidden z-10 mt-2 min-w-[15rem] bg-white shadow-md rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700" aria-labelledby="hs-dropdown-basic">
                                                 <x-button-link 
                                                     class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
-                                                    {{-- x-data="{ editRoute: '{{ route('branch.edit', ['id' => ':id']) }}' }"
-                                                    x-bind:href="editRoute.replace(':id', branch.id)" --}}
+                                                    x-data="{ editRoute: '{{ route('staff.edit', ['id' => ':id']) }}' }"
+                                                    x-bind:href="editRoute.replace(':id', staff.user.id)"
                                                 >
                                                     Update
                                                 </x-button-link>
-                                                <a class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" href="#">
+                                                <button 
+                                                    type="button" 
+                                                    class="flex items-center py-2 px-3 w-full rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
+                                                    x-data="{ route: '{{ route('staff.delete', ':id') }}'}"
+                                                    x-on:click.prevent="$dispatch('open-modal', 'confirm-staff-deletion')"
+                                                    x-on:click="$dispatch('set-action', route.replace(':id', staff.user.id))"
+                                                >
                                                     Delete
-                                                </a>
+                                                </button>
                                                 <a x-on:click.prevent="selectedBranch = branch" class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" href="#">
                                                     Detail
                                                 </a>
@@ -78,7 +84,31 @@
                 </div>
             </div>
         </div>
-
+        {{-- modal delete --}}
+        <x-modal name="confirm-staff-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+            <form method="POST" x-bind:action="action" class="p-6">
+                @csrf
+                @method('DELETE')
+    
+                <h2 class="text-lg text-center font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('Apakah anda yakin ingin menghapus data staff?') }}
+                </h2>
+    
+                <p class="mt-1 text-sm text-center text-gray-600 dark:text-gray-400">
+                    {{ __('data yang dihapus tidak dapat dikembalikan kembali!') }}
+                </p>
+    
+                <div class="mt-6 flex justify-center">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+    
+                    <x-danger-button class="ml-3">
+                        {{ __('Delete Account') }}
+                    </x-danger-button>
+                </div>
+            </form>
+        </x-modal>
         <!-- Right Side Card to Display Selected Branch Details -->
         <div class="w-1/3 mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
