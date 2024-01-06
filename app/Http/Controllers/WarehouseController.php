@@ -93,9 +93,10 @@ class WarehouseController extends Controller
         }
     }
 
-    public function transactionStore(Request $request){
+    public function transactionStore(Request $request)
+    {
         $user_id = Auth::id();
-        // dd($request);
+
         $validated = $request->validate([
             'branch_id' => 'required|numeric',
             'tanggal' => 'required|date',
@@ -103,22 +104,47 @@ class WarehouseController extends Controller
             'price_at.*' => 'required|numeric|gt:0',
             'quantity.*' => 'required|numeric|gt:0',
         ]);
-        $transaction = Transaction::create([
-            'user_id' => $user_id,
-            'branch_id' => $request->branch_id,
-            'tanggal' => $request->tanggal,
-            'type' => 'in',
-        ]);
-        foreach ($request->item_id as $index => $item_id) {
-            TransactionDetail::create([
-                'transaction_id' => $transaction->id,
-                'item_id' => $item_id,
-                'quantity' => $request->quantity[$index],
-                'price_at' => $request->price_at[$index],
-            ]);
-        }
-    }
 
+        try {
+            DB::beginTransaction();
+
+            $transaction = Transaction::create([
+                'user_id' => $user_id,
+                'branch_id' => $request->branch_id,
+                'tanggal' => $request->tanggal,
+                'type' => 'in',
+            ]);
+
+            foreach ($request->item_id as $index => $item_id) {
+                TransactionDetail::create([
+                    'transaction_id' => $transaction->id,
+                    'item_id' => $item_id,
+                    'quantity' => $request->quantity[$index],
+                    'price_at' => $request->price_at[$index],
+                ]);
+
+                $item = Item::find($item_id);
+
+                if ($item) {
+                    $item->update([
+                        'stock' => $item->stock + $request->quantity[$index],
+                    ]);
+                }
+            }
+
+            DB::commit();
+            
+            $notification = [
+                'message' => 'Item created successfully',
+                'alert-type' => 'success',
+            ];
+            return redirect()->route('warehouse',$notification);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+        }
+
+    }
 
     /**
      * Display the specified resource.

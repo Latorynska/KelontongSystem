@@ -9,4 +9,6 @@ class TransactionDetail extends Model
 {
     use HasFactory;
     protected $table = "transaction_details";
+    protected $guarded = ['id'];
+    protected $fillable = ['transaction_id','item_id','quantity','price_at'];
 }
