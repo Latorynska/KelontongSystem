@@ -13,7 +13,20 @@
             this.totalPrice = this.transactionDetails.reduce((total, item) => total + item.subTotal, 0);
         }
     }">
-        <div class="flex">
+    
+
+        <div class="py-6 flex">
+            <div class="w-full mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <p class="text-white">
+                            Restock Item
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pb-6 flex">
             {{-- left card --}}
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
@@ -253,11 +266,10 @@
                                 {{-- button remove --}}
                                 <div class="relative w-10/12 my-4">
                                     <div class="w-full">
-
                                         <button 
                                             type="button" 
                                             class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-    
+                                            x-on:click.prevent="transactionDetails.splice(index, 1); updateTotalPrice();"
                                         >
                                             Remove item
                                         </button>
@@ -265,7 +277,7 @@
                                 </div>
                             </div>
                         </template>
-                            {{-- end detail transaksi --}}
+                        {{-- end detail transaksi --}}
                             <div class="w-full flex justify-between items-center">
                                 <p class="text-white">
                                     Total Price: Rp.<span x-text="totalPrice"></span>
@@ -312,7 +324,7 @@
                                         <td x-text="item.number" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
                                         <td x-text="item.kode_barang" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                         <td x-text="item.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                        <td x-text="item.discount" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                        <td x-text="item.stock" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                         <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
                                             <button 
                                                 type="button" 
@@ -332,16 +344,3 @@
         </div>
     </div>
 </x-app-layout>
-
-
-{{-- <div class="py-6 flex">
-    <div class="w-full mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900 dark:text-gray-100">
-                <p class="text-white">
-                    Restock Item
-                </p>
-            </div>
-        </div>
-    </div>
-</div> --}}
