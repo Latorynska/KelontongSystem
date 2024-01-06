@@ -9,41 +9,68 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 
 
+use App\Models\Branch;
+use App\Models\BranchStaff;
 use App\Models\BrandStaff;
-use App\Models\Brand;
 use App\Models\User;
 
-class StaffController extends Controller
+class BranchStaffController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // Get the current user's ID
-        $ownerId = Auth::id();
+        //
+        $manager_id = Auth::id();
+        $branches = Branch::whereHas('manager', function ($query) use ($manager_id) {
+            $query->where('users.id', $manager_id);
+        })->withCount('staff')->get();
+        
+        $data['branches'] = $branches;
+        return view('branch.manager.index', $data);
+    }
+    public function branch(string $id)
+    {
+        //
+        $branch = Branch::findOrFail($id);
 
-        // Get the user's brand with manager information and staff count
-        $brand = Brand::with([
-            'branches.manager',
-            'branches' => function ($query) {
-                $query->withCount('staff');
+        $branch->load([
+            'branchStaff' => function ($query) {
+                $query->whereDoesntHave('user.roles', function ($roleQuery) {
+                    $roleQuery->whereIn('name', ['Manager']);
+                });
             }
-        ])->where('user_id', $ownerId)->first();
+        ]);
+    
+        $data['branch'] = $branch;
+    
+        
+        $brandId = BrandStaff::where('user_id', Auth::id())->value('brand_id');
 
-        $data['brand'] = $brand;
-        $data['brandStaff'] = BrandStaff::with(['user.roles', 'user.branches'])->get();
-        // dump($data['brandStaff'][19]);
-        return view('staff.index', $data);
+        $data['brandStaff'] = BrandStaff::where('brand_id', $brandId)
+        ->whereDoesntHave('user.roles', function ($roleQuery) {
+            $roleQuery->whereIn('name', ['Manager', 'Owner']);
+        })
+        ->whereDoesntHave('user.branches', function ($branchQuery) use ($id) {
+            $branchQuery->where('branch_id', $id);
+        })
+        ->with('user.roles')
+        ->get()
+        ->pluck('user');
+
+        return view('branch.manager.staff', $data);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($id)
     {
-        $data['roles'] = Role::whereNotIn('name', ['admin', 'owner'])->get();
-        return view('staff.create', $data);
+        $data['branch'] = Branch::findOrFail($id);
+        $data['roles'] = Role::whereNotIn('name', ['admin', 'owner','manager'])->get();
+
+        return view('branch.manager.create', $data);
     }
 
     /**
@@ -56,14 +83,24 @@ class StaffController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'role' => ['required', 'not_in:admin,owner'],
+            'role' => ['required', 'not_in:admin,owner,manager'],
             'password' => 'required|min:8|regex:/^(?=.*[A-Z])(?=.*\d).+$/',
         ]);
-
+        // dd($brand);
         // Start the database transaction
         DB::beginTransaction();
 
         try {
+            // Get the current user's brand using the relation in BrandStaff
+            $brandStaff = BrandStaff::where('user_id', Auth::id())->first();
+
+            if (!$brandStaff) {
+                throw new \Exception('User does not have associated BrandStaff.');
+            }
+
+            // Get the brand from BrandStaff
+            $brand_id = $brandStaff->brand_id;
+
             // Create a new user
             $newUser = User::create([
                 'name' => $request->input('name'),
@@ -79,14 +116,15 @@ class StaffController extends Controller
                 $newUser->roles()->attach($role->id, ['model_type' => get_class($newUser)]);
             }
 
-            // Get the current user's brand
-            $ownerId = Auth::id();
-            $brand = Brand::with('branches.manager')->where('user_id', $ownerId)->first();
-
             // Add the new user to BrandStaff
             $brandStaff = BrandStaff::create([
                 'user_id' => $newUser->id,
-                'brand_id' => $brand->id,
+                'brand_id' => $brand_id,
+            ]);
+
+            $branchStaff = BranchStaff::create([
+                "branch_id" => $request->branch_id,
+                "user_id" => $newUser->id,
             ]);
 
             // Commit the transaction if all steps are successful
@@ -106,14 +144,41 @@ class StaffController extends Controller
             ];
         }
 
-        return redirect()->route('staff')->with($notification);
+        return redirect()->route('branchstaff')->with($notification);
+    }
+
+
+    public function assign(Request $request, string $branchId){
+        $newBranchStaff = BranchStaff::create([
+            'user_id' => $request->user_id,
+            'branch_id' => $branchId,
+        ]);
+        
+        $notification = [
+            'message' => 'User added successfully',
+            'alert-type' => 'success',
+        ];
+        
+        return redirect()->route('branchstaff.branch',['id'=>$branchId])->with($notification);
+    }
+
+    public function remove(string $id){
+        // dd($id);
+        $branchStaff = BranchStaff::findOrFail($id);
+        $branchStaff->delete();
+        $notification = [
+            'message' => 'Staff removed successfully',
+            'alert-type' => 'success',
+        ];
+        
+        return back()->with($notification);
     }
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        // ...
+        //
     }
 
     /**
@@ -127,11 +192,10 @@ class StaffController extends Controller
         if (!$data['staff']) {
             abort(404);
         }
-        $data['roles'] = Role::whereNotIn('name', ['admin', 'owner'])->get();
+        $data['roles'] = Role::whereNotIn('name', ['admin', 'owner','manager'])->get();
 
-        return view('staff.edit', $data);
+        return view('branch.manager.edit', $data);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -145,7 +209,7 @@ class StaffController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'role' => ['required', 'not_in:admin,owner'],
+            'role' => ['required', 'not_in:admin,owner,manager'],
             'password' => 'nullable|min:8|regex:/^(?=.*[A-Z])(?=.*\d).+$/',
         ]);
 
@@ -191,24 +255,14 @@ class StaffController extends Controller
             ];
         }
 
-        return redirect()->route('staff', $id)->with($notification);
+        return redirect()->route('branchstaff')->with($notification);
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        // dd($id);
-        $user = User::findOrFail($id);
-        // dd($user);
-        $user->delete();
-        
-        $notification = [
-            'message' => 'User deleted',
-            'alert-type' => 'success',
-        ];
-        return redirect()->route('staff', $id)->with($notification);
+        //
     }
 }

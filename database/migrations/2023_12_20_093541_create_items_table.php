@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('price');
             $table->integer('discount');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('branch_id')->references('id')
                 ->on('branches')
                 ->onDelete('cascade')

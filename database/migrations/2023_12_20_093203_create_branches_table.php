@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name',255);
             $table->string('location');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('brand_id')
                 ->references('id')
                 ->on('brands')

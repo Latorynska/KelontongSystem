@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div x-data="{ selectedManager: null }">
+    <div x-data="{ selectedManager: {!! htmlspecialchars(json_encode($branch->manager ?? null)) !!} }">
         <div class="py-12 flex">
             <div class="w-8/12 mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
@@ -7,8 +7,9 @@
                         <div class="flex items-center justify-between p-2 text-lg font-bold">
                             <span>Branch Information</span>
                         </div>
-                        <form method="post" action="{{ route('branch.create') }}">
+                        <form method="post" action="{{ route('branch.update', ['id' => $branch->id]) }}">
                             @csrf
+                            @method('PATCH')
                             <!-- branch name -->
                             <div class="relative w-10/12 my-4">
                                 <input 
@@ -23,7 +24,7 @@
                                     autofill:pt-6
                                     autofill:pb-2" 
                                     placeholder="input new branch name here"
-                                    value="{{ old('name')}}"
+                                    value="{{ old('name', $branch->name ?? '') }}"
                                 >
                                 <label 
                                     for="hs-floating-gray-input-email" 
@@ -56,7 +57,7 @@
                                     autofill:pt-6
                                     autofill:pb-2" 
                                     placeholder="input new branch location here"
-                                    value="{{ old('location')}}"
+                                    value="{{ old('location', $branch->location ?? '') }}"
                                 >
                                 <label 
                                     for="hs-floating-gray-input-email" 
@@ -85,13 +86,12 @@
                                         type="hidden" 
                                         name="manager_id"
                                         x-bind:value="selectedManager ? selectedManager.id : ''" 
-                                        value="{{ old('manager_id')}}"
+                                        value="{{ old('manager_id', $branch->manager->id ?? '')}}"
                                     >
                                     <input 
                                         type="hidden" 
                                         name="owner_id"
                                         value="{{ Auth::user()->id }}"
-                                        value="{{ old('owner_id')}}"
                                     >
                                     {{-- manager text --}}
                                     <div class="relative w-10/12">
@@ -150,7 +150,7 @@
                         Select manager for this branch
                     </span>
                 </div>
-                <x-table :data="$managers">
+                <x-table :data="$managers" :filterFields="'[\'name\', \'email\']'">
                     <x-slot name="newData">
                         <x-button-link :href="route('brand')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
                             Add Data
@@ -165,6 +165,9 @@
                         </tr>
                     </x-slot>
                     <x-slot name="body">
+                        <tr x-show="paginatedData.length === 0">
+                            <td colspan="7" class="text-center py-4">No data available</td>
+                        </tr>
                         <template x-for="(manager, index) in paginatedData" :key="index">
                             <tr 
                                 class="even:bg-white odd:bg-gray-100 hover:bg-gray-100 dark:even:bg-gray-800 dark:odd:bg-gray-700 dark:hover:bg-gray-700"

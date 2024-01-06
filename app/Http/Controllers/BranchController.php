@@ -159,8 +159,14 @@ class BranchController extends Controller
     public function edit(string $id)
     {
         //
-        $branch = Branch::findOrFail($id)->first();
-        dump($branch);
+        $ownerId = Auth::id();
+        $brand = Brand::with('branches')->where('user_id', $ownerId)->first();
+        $branch = Branch::with('manager')->findOrFail($id);
+
+        $data['managers'] = $brand->managers->pluck('user');
+        $data['branch'] = $branch;
+        // dump($data);
+        return view('branch.edit',$data);
     }
 
     /**
@@ -168,7 +174,65 @@ class BranchController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name' => 'required',
+                'location' => 'required',
+                'manager_id' => 'required',
+            ]);
+
+            // Begin a database transaction
+            DB::beginTransaction();
+
+            // Find the branch by ID
+            $branch = Branch::findOrFail($id);
+
+            // Update branch information
+            $branch->update([
+                'name' => $request->name,
+                'location' => $request->location,
+            ]);
+
+            // Check if the manager has changed
+            if ($branch->manager->id != $request->manager_id) {
+                // Update the corresponding branchStaff for the old manager
+                $oldManagerBranchStaff = BranchStaff::where('branch_id', $branch->id)
+                    ->where('user_id', $branch->manager->id)
+                    ->first();
+
+                if ($oldManagerBranchStaff) {
+                    $oldManagerBranchStaff->update([
+                        'user_id' => $request->manager_id,
+                    ]);
+                }
+            }
+
+            // Commit the database transaction if all is successful
+            DB::commit();
+
+            $notification = [
+                'message' => 'Branch information updated successfully',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('branch')->with($notification);
+        } catch (ValidationException $e) {
+            // If validation fails, rollback the transaction
+            DB::rollBack();
+
+            // Flash input data and validation errors
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            // If any other exception occurs, rollback the transaction
+            DB::rollBack();
+
+            $notification = [
+                'message' => $e->getMessage(),
+                'alert-type' => 'error'
+            ];
+        }
+
+        // Redirect back with notification
+        return back()->with($notification);
     }
 
     /**

@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Branch extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $fillable = ['brand_id', 'owner_id', 'name', 'location'];
 
     public function manager()
@@ -34,6 +36,12 @@ class Branch extends Model
             'user_id'
         );
     }
+    
+    public function branchStaff()
+    {
+        return $this->hasMany(BranchStaff::class, 'branch_id', 'id')->with('user.roles');
+    }
+    
     public function getManagerAttribute()
     {
         return $this->manager()->first();

@@ -150,7 +150,7 @@
                         Select manager for this branch
                     </span>
                 </div>
-                <x-table :data="$managers">
+                <x-table :data="$managers" :filterFields="'[\'name\', \'email\']'">
                     <x-slot name="newData">
                         <x-button-link :href="route('brand')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
                             Add Data
@@ -165,6 +165,9 @@
                         </tr>
                     </x-slot>
                     <x-slot name="body">
+                        <tr x-show="paginatedData.length === 0">
+                            <td colspan="7" class="text-center py-4">No data available</td>
+                        </tr>
                         <template x-for="(manager, index) in paginatedData" :key="index">
                             <tr 
                                 class="even:bg-white odd:bg-gray-100 hover:bg-gray-100 dark:even:bg-gray-800 dark:odd:bg-gray-700 dark:hover:bg-gray-700"

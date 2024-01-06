@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\BranchStaffController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TransactionController;
@@ -52,6 +53,7 @@ Route::group(['middleware' => ['role:owner']], function () {
             Route::get('/create', [BranchController::class, 'create'])->name('.create');
             Route::post('/create', [BranchController::class, 'store'])->name('.store');
             Route::get('/{id}', [BranchController::class, 'edit'])->name('.edit');
+            Route::patch('/{id}', [BranchController::class, 'update'])->name('.update');
         }
     );
     
@@ -64,6 +66,35 @@ Route::group(['middleware' => ['role:owner']], function () {
             Route::get('/{id}', [StaffController::class, 'edit'])->name('.edit');
             Route::patch('/{id}', [StaffController::class, 'update'])->name('.update');
             Route::delete('/{id}', [StaffController::class, 'destroy'])->name('.delete');
+        }
+    );
+});
+Route::group(['middleware' => ['role:manager']], function () {
+    Route::prefix('/branchstaff')
+        ->name('branchstaff')
+        ->group(function(){
+            Route::get('/', [BranchStaffController::class, 'index']);
+            Route::get('/{id}', [BranchStaffController::class, 'branch'])->name('.branch');
+            Route::get('/staff/{id}', [BranchStaffController::class, 'edit'])->name('.edit');
+            Route::patch('/staff/{id}', [BranchStaffController::class, 'update'])->name('.update');
+            Route::get('/{id}/create', [BranchStaffController::class, 'create'])->name('.create');
+            Route::post('/', [BranchStaffController::class, 'store'])->name('.store');
+            Route::post('/{id}', [BranchStaffController::class, 'assign'])->name('.assign');
+            Route::delete('/{id}', [BranchStaffController::class, 'remove'])->name('.remove');
+        }
+    );
+});
+Route::group(['middleware' => ['role:warehouse-staff|supervisor']], function () {
+    Route::prefix('/warehouse')
+        ->name('warehouse')
+        ->group(function(){
+            Route::get('/', [WarehouseController::class, 'index']);
+            Route::get('/item', [WarehouseController::class, 'create'])->name('.item.create');
+            Route::post('/item', [WarehouseController::class, 'store'])->name('.item.store');
+            Route::get('/item/{id}', [WarehouseController::class, 'edit'])->name('.item.edit');
+            Route::patch('/item/{id}', [WarehouseController::class, 'update'])->name('.item.update');
+            Route::get('/transaction', [WarehouseController::class, 'transactionIndex'])->name('.transaction');
+            Route::post('/transaction', [WarehouseController::class, 'transactionStore'])->name('.transaction.store');
         }
     );
 });
@@ -94,12 +125,6 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('transaction')
         ->group(function(){
             Route::get('/', [TransactionController::class, 'index']);
-        }
-    );
-    Route::prefix('/warehouse')
-        ->name('warehouse')
-        ->group(function(){
-            Route::get('/', [WarehouseController::class, 'index']);
         }
     );
 });

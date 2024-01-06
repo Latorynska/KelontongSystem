@@ -38,7 +38,7 @@ class Brand extends Model
     
     public function managers()
     {
-        return $this->branchStaff()
+        return $this->brandStaff()
             ->with('user') // Eager load the related User model
             ->whereHas('user.roles', function ($query) {
                 $query->where('name', 'manager');

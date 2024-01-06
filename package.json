@@ -16,6 +16,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "@preline/input-number": "^2.0.2",
         "@preline/overlay": "^2.0.1",
         "preline": "^2.0.2"
     }

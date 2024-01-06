@@ -26,6 +26,9 @@
 
                         <!-- Table Body -->
                         <x-slot name="body">
+                            <tr x-show="paginatedData.length === 0">
+                                <td colspan="7" class="text-center py-4">No data available</td>
+                            </tr>
                             <template x-for="(staff, index) in paginatedData" :key="index">
                                 <tr class="even:bg-white odd:bg-gray-100 hover:bg-gray-100 dark:even:bg-gray-800 dark:odd:bg-gray-700 dark:hover:bg-gray-700">
                                     <td x-text="index + 1 + (currentPage - 1) * itemsPerPage" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
