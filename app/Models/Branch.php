@@ -46,4 +46,8 @@ class Branch extends Model
     {
         return $this->manager()->first();
     }
+    
+    public function transactions(){
+        return $this->hasMany(Transaction::class, 'branch_id','id')->with(['transactionDetails', 'user']);
+    }
 }

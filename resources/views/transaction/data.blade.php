@@ -1,17 +1,17 @@
 <x-app-layout>
     <div class="py-12 flex" x-data="{ selectedBranch: {} }">
 
-        <div class="w-2/3 mx-auto sm:px-6 lg:px-8">
+        <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex items-center justify-between p-2 text-lg font-bold">
-                        <span>{{ $brand->name."'s Branches" }}</span>
+                        <span>{{ "Branches" }}</span>
                     </div>
                     <x-table :data="$branches" :filterFields="'[\'name\', \'manager.name\', \'location\']'">
                         <x-slot name="newData">
-                            <x-button-link :href="route('branch.create')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
+                            {{-- <x-button-link :href="route('branch.create')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
                                 Add Data
-                            </x-button-link>
+                            </x-button-link> --}}
                         </x-slot>
                         <!-- Table Header -->
                         <x-slot name="header">
@@ -43,10 +43,10 @@
                                             <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 w-min hidden z-10 mt-2 min-w-[15rem] bg-white shadow-md rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700" aria-labelledby="hs-dropdown-basic">
                                                 <x-button-link 
                                                     class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
-                                                    x-data="{ editRoute: '{{ route('branch.edit', ['id' => ':id']) }}' }"
-                                                    x-bind:href="editRoute.replace(':id', branch.id)"
+                                                    x-data="{ selectRoute: '{{ route('transaction.data.view', ['id' => ':id']) }}' }"
+                                                    x-bind:href="selectRoute.replace(':id', branch.id)"
                                                 >
-                                                    Update
+                                                    View Transaction
                                                 </x-button-link>
                                                 {{-- <a class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" href="#">
                                                     Delete
@@ -66,20 +66,13 @@
         </div>
 
         <!-- Right Side Card to Display Selected Branch Details -->
-        <div class="w-1/3 mx-auto sm:px-6 lg:px-8">
+        {{-- <div class="w-1/3 mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-xl font-bold mb-6" x-text="selectedBranch.name ? selectedBranch.name + '\'s Details' : 'Select any branch to show the details'"></h2>
-                    <div x-show="selectedBranch.id">
-                        {{-- <pre x-text="JSON.stringify(selectedBranch, null, 2)"></pre> --}}
-                        <p class="text-gray-500 dark:text-gray-400 mb-4"><strong>Manager:</strong> <span x-text="selectedBranch?.manager?.name"></span></p>
-                        <p class="text-gray-500 dark:text-gray-400 mb-4"><strong>Location:</strong> <span x-text="selectedBranch?.location"></span></p>
-                        <p class="text-gray-500 dark:text-gray-400 mb-4"><strong>Branch Staff Count :</strong> <span x-text="selectedBranch?.staff_count"></span></p>
-                        <!-- Add other details as needed -->
-                    </div>
+                    <h2 class="text-xl font-bold mb-6" x-text="'Select any branch to show the details'"></h2>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 </x-app-layout>

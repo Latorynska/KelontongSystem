@@ -98,12 +98,24 @@ Route::group(['middleware' => ['role:warehouse-staff|supervisor']], function () 
         }
     );
 });
+
+// transaction
+
 Route::group(['middleware' => ['role:cashier']], function () {
     Route::prefix('/transaction')
         ->name('transaction')
         ->group(function(){
             Route::get('/', [TransactionController::class, 'index']);
             Route::post('/', [TransactionController::class, 'store'])->name('.store');
+        }
+    );
+});
+Route::group(['middleware' => ['role:owner|manager']], function () {
+    Route::prefix('/transaction')
+        ->name('transaction')
+        ->group(function(){
+            Route::get('/data', [TransactionController::class, 'data'])->name('.data');
+            Route::get('/data/{id}', [TransactionController::class, 'branchData'])->name('.data.view');
         }
     );
 });

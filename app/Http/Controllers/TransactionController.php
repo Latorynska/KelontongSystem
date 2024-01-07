@@ -29,6 +29,25 @@ class TransactionController extends Controller
         return view('transaction.index',$data);
     }
 
+    public function data() {
+        $user = auth()->user();
+        $userRoles = $user->getRoleNames();
+        $branches = null;
+    
+        if ($userRoles->contains('owner')) {
+            // Assuming 'owner_id' is the correct foreign key in the Branch model
+            $branches = Branch::where('owner_id', $user->id)->get();
+        } elseif ($userRoles->contains('manager')) {
+            // Use 'load' method to eager load the 'branches' relationship
+            $user->load('branches');
+            $branches = $user->branches;
+        }
+        $branches->load('manager');
+        $data['branches'] = $branches;
+        return view('transaction.data',$data);
+    }
+    
+
     /**
      * Show the form for creating a new resource.
      */
@@ -104,6 +123,18 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      */
+
+    public function branchData(string $id){
+        $branch = Branch::with('transactions')->findOrFail($id);
+        $branch->transactions->each(function ($transaction) {
+            $transaction->totalPrice = $transaction->totalPrice();
+            $transaction->userName = $transaction->user->name;
+        });
+        $data['branch'] = $branch;
+        // dd($data);
+        return view ('transaction.dataView', $data);
+    }
+
     public function show(string $id)
     {
         //
