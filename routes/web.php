@@ -98,6 +98,15 @@ Route::group(['middleware' => ['role:warehouse-staff|supervisor']], function () 
         }
     );
 });
+Route::group(['middleware' => ['role:cashier']], function () {
+    Route::prefix('/transaction')
+        ->name('transaction')
+        ->group(function(){
+            Route::get('/', [TransactionController::class, 'index']);
+            Route::post('/', [TransactionController::class, 'store'])->name('.store');
+        }
+    );
+});
 
 
 Route::group(['middleware' => ['role:admin']], function () {
@@ -119,12 +128,6 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('item')
         ->group(function(){
             Route::get('/', [ItemController::class, 'index']);
-        }
-    );
-    Route::prefix('/transaction')
-        ->name('transaction')
-        ->group(function(){
-            Route::get('/', [TransactionController::class, 'index']);
         }
     );
 });

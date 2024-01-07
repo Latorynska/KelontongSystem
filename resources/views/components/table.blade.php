@@ -10,7 +10,6 @@
         </div>
         {{ $newData }}
     </div>
-
     <!-- Table Header Slot -->
     <div class="border rounded-lg shadow overflow-hidden dark:border-gray-700 dark:shadow-gray-900">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -65,6 +64,7 @@
     }
 
     function initPagination(data, filterFields) {
+        console.log(data);
         data = data.map((row, index) => ({ ...row, number: index + 1 }));
         console.log(data);
         return {

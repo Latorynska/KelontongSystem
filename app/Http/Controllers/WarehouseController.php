@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 use App\Models\Branch;
 use App\Models\User;
@@ -57,7 +58,7 @@ class WarehouseController extends Controller
     {
         $validated = $request->validate([
             "branch_id" => "required",
-            "kode_barang" => "required",
+            "kode_barang" => "required|unique:items",
             "name" => "required",
             // "stock" => "required|numeric|gt:0",
             "price" => "required|numeric|gt:0",
@@ -103,6 +104,14 @@ class WarehouseController extends Controller
             'item_id.*' => 'required|numeric',
             'price_at.*' => 'required|numeric|gt:0',
             'quantity.*' => 'required|numeric|gt:0',
+            'item_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (empty($value)) {
+                        $fail('At least one item_id is required.');
+                    }
+                },
+            ],
         ]);
 
         try {
@@ -135,15 +144,14 @@ class WarehouseController extends Controller
             DB::commit();
             
             $notification = [
-                'message' => 'Item created successfully',
+                'message' => 'Transaksi Berhasil',
                 'alert-type' => 'success',
             ];
-            return redirect()->route('warehouse',$notification);
+            return redirect()->route('warehouse')->with($notification);
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e->getMessage());
         }
-
     }
 
     /**
@@ -159,7 +167,7 @@ class WarehouseController extends Controller
      */
     public function edit(string $id)
     {
-        $item = Item::findOrFail($id)->first();
+        $item = Item::findOrFail($id);
         $branch = User::with('branches')->findOrFail(Auth::id())->branches[0];
         $data['branch'] = $branch;
         $data['item'] = $item;
