@@ -36,6 +36,25 @@
     
                 <!-- Page Content -->
                 <main>
+                    <div class="pt-4 pb-0 px-8 w-full flex items-center">
+                        <button 
+                            onclick="history.go(-1)" 
+                            class="inline-flex items-start px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 mt-0.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                            </svg>
+                            <span class="ml-2">Back</span>
+                        </button>
+                    
+                        <div class="w-full mx-auto sm:px-6 lg:px-8">
+                            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
+                                <div class="p-6 text-gray-900 dark:text-gray-100">
+                                    <x-breadcrumb separator=" / " />
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
                     {{ $slot }}
                 </main>
             </div>

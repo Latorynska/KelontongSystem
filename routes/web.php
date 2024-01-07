@@ -118,6 +118,13 @@ Route::group(['middleware' => ['role:owner|manager']], function () {
             Route::get('/data/{id}', [TransactionController::class, 'branchData'])->name('.data.view');
         }
     );
+    Route::prefix('/item')
+        ->name('item')
+        ->group(function(){
+            Route::get('/data', [WarehouseController::class, 'data'])->name('.data');
+            Route::get('/data/{id}', [WarehouseController::class, 'branchData'])->name('.data.view');
+        }
+    );
 });
 
 

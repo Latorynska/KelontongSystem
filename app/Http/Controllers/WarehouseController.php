@@ -30,6 +30,24 @@ class WarehouseController extends Controller
         return view('warehouse.index',$data);
     }
 
+    public function data() {
+        $user = auth()->user();
+        $userRoles = $user->getRoleNames();
+        $branches = null;
+    
+        if ($userRoles->contains('owner')) {
+            // Assuming 'owner_id' is the correct foreign key in the Branch model
+            $branches = Branch::where('owner_id', $user->id)->get();
+        } elseif ($userRoles->contains('manager')) {
+            // Use 'load' method to eager load the 'branches' relationship
+            $user->load('branches');
+            $branches = $user->branches;
+        }
+        $branches->load('manager');
+        $data['branches'] = $branches;
+        return view('warehouse.data',$data);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -157,9 +175,12 @@ class WarehouseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function branchData(string $id)
     {
-        //
+        $branch = Branch::with('items')->findOrFail($id);
+        $data['branch'] = $branch;
+        // dd($data);
+        return view ('warehouse.dataView', $data);
     }
 
     /**

@@ -50,4 +50,8 @@ class Branch extends Model
     public function transactions(){
         return $this->hasMany(Transaction::class, 'branch_id','id')->with(['transactionDetails', 'user']);
     }
+
+    public function items(){
+        return $this->hasMany(Item::class, 'branch_id');
+    }
 }

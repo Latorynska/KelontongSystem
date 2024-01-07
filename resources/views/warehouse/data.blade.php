@@ -5,7 +5,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex items-center justify-between p-2 text-lg font-bold">
-                        <span>{{ "Select branch to view transaction" }}</span>
+                        <span>{{ "Select Branch to view stock" }}</span>
                     </div>
                     <x-table :data="$branches" :filterFields="'[\'name\', \'manager.name\', \'location\']'">
                         <x-slot name="newData">
@@ -43,14 +43,11 @@
                                             <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 w-min hidden z-10 mt-2 min-w-[15rem] bg-white shadow-md rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700" aria-labelledby="hs-dropdown-basic">
                                                 <x-button-link 
                                                     class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
-                                                    x-data="{ selectRoute: '{{ route('transaction.data.view', ['id' => ':id']) }}' }"
+                                                    x-data="{ selectRoute: '{{ route('item.data.view', ['id' => ':id']) }}' }"
                                                     x-bind:href="selectRoute.replace(':id', branch.id)"
                                                 >
-                                                    View Transaction
+                                                    View Item Stock
                                                 </x-button-link>
-                                                {{-- <a class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" href="#">
-                                                    Delete
-                                                </a> --}}
                                                 <a x-on:click.prevent="selectedBranch = branch" class="flex items-center py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" href="#">
                                                     Detail
                                                 </a>
