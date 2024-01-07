@@ -116,6 +116,7 @@ Route::group(['middleware' => ['role:owner|manager']], function () {
         ->group(function(){
             Route::get('/data', [TransactionController::class, 'data'])->name('.data');
             Route::get('/data/{id}', [TransactionController::class, 'branchData'])->name('.data.view');
+            Route::post('/print', [TransactionController::class, 'print'])->name('.print');
         }
     );
     Route::prefix('/item')

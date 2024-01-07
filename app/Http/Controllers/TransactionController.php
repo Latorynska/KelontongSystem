@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use PDF;
 
 use App\Models\Branch;
 use App\Models\User;
@@ -135,10 +136,44 @@ class TransactionController extends Controller
         return view ('transaction.dataView', $data);
     }
 
-    public function show(string $id)
+    public function print(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'branch_id' => 'required',
+            'beginDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:beginDate',
+            'type' => 'nullable|in:all,in,out', // Add type validation
+        ]);
+
+        $branch = Branch::findOrFail($request->branch_id);
+        $branchId = $validated['branch_id'];
+        $beginDate = $validated['beginDate'];
+        $endDate = $validated['endDate'];
+        $type = $validated['type'];
+
+        $query = Transaction::with(['transactionDetails.item','user'])
+            ->where('branch_id', $branchId)
+            ->whereBetween('tanggal', [$beginDate, $endDate]);
+
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        $transactions = $query->get();
+
+        $transactions->each(function ($transaction) {
+            $transaction->totalPrice = $transaction->totalPrice();
+            $transaction->userName = $transaction->user->name;
+        });
+        $data['transactions'] = $transactions;
+        $data['branch'] = $branch;
+        $data['beginDate'] = $beginDate;
+        $data['endDate'] = $endDate;
+        // dd($data);
+        $pdf = PDF::loadView('transaction.print', $data);
+        return $pdf->stream("transaction_report_branch_".$branch->name."_".$beginDate."_to_".$endDate.".pdf");
     }
+
 
     /**
      * Show the form for editing the specified resource.
