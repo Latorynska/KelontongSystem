@@ -117,6 +117,7 @@ Route::group(['middleware' => ['role:owner|manager']], function () {
             Route::get('/data', [TransactionController::class, 'data'])->name('.data');
             Route::get('/data/{id}', [TransactionController::class, 'branchData'])->name('.data.view');
             Route::post('/print', [TransactionController::class, 'print'])->name('.print');
+            Route::post('/print/all', [TransactionController::class, 'printAll'])->name('.print.all');
         }
     );
     Route::prefix('/item')
@@ -124,6 +125,7 @@ Route::group(['middleware' => ['role:owner|manager']], function () {
         ->group(function(){
             Route::get('/data', [WarehouseController::class, 'data'])->name('.data');
             Route::get('/data/{id}', [WarehouseController::class, 'branchData'])->name('.data.view');
+            Route::get('/data/{id}/print', [WarehouseController::class, 'printBranchData'])->name('.data.view.print');
         }
     );
 });

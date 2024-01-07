@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use PDF;
 
 use App\Models\Branch;
 use App\Models\User;
@@ -183,6 +184,14 @@ class WarehouseController extends Controller
         return view ('warehouse.dataView', $data);
     }
 
+    public function printBranchData(string $id){
+        $branch = Branch::with('items')->findOrFail($id);
+        $data['branch'] = $branch;
+        // dd($data);
+        $pdf = PDF::loadView('warehouse.print', $data);
+        return $pdf->stream("item_stock_report_branch_".$branch->name.".pdf");
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -193,6 +202,7 @@ class WarehouseController extends Controller
         $data['branch'] = $branch;
         $data['item'] = $item;
         // dd($data['item']);
+        
         return view('warehouse.item.edit', $data);
     }
 

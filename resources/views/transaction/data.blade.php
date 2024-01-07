@@ -9,9 +9,13 @@
                     </div>
                     <x-table :data="$branches" :filterFields="'[\'name\', \'manager.name\', \'location\']'">
                         <x-slot name="newData">
-                            {{-- <x-button-link :href="route('branch.create')" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800">
-                                Add Data
-                            </x-button-link> --}}
+                            <button 
+                                type="button" 
+                                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                                x-on:click.prevent="$dispatch('open-modal', 'export-modal')"
+                            >
+                                Export Data
+                            </button>
                         </x-slot>
                         <!-- Table Header -->
                         <x-slot name="header">
@@ -64,15 +68,128 @@
                 </div>
             </div>
         </div>
-
-        <!-- Right Side Card to Display Selected Branch Details -->
-        {{-- <div class="w-1/3 mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg h-full">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-xl font-bold mb-6" x-text="'Select any branch to show the details'"></h2>
-                </div>
-            </div>
-        </div> --}}
     </div>
 
+    {{-- modal export --}}
+    <x-modal name="export-modal" :show="$errors->userDeletion->isNotEmpty()" focusable maxWidth="5xl">
+        <form method="POST" action="{{ route('transaction.print.all') }}" target="_blank" class="p-6">
+            @csrf
+            @method('POST')
+            <h2 class="text-lg text-center font-medium text-gray-900 dark:text-gray-100">
+                Download report criteria
+            </h2>
+
+            <div class="w-full flex items-center py-2">
+                {{-- tanggal export --}}
+                <div class="relative w-full px-1">
+                    <input 
+                        name="beginDate"
+                        type="datetime-local" 
+                        id="hs-floating-gray-input-beginDate" 
+                        class="peer p-4 block w-full bg-gray-100 border-transparent rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-700 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600
+                        focus:pt-6
+                        focus:pb-2
+                        [&:not(:placeholder-shown)]:pt-7
+                        [&:not(:placeholder-shown)]:pb-2
+                        autofill:pt-6
+                        autofill:pb-2" 
+                        placeholder="input date here"
+                        value="{{ old('tanggal', now()->firstOfMonth()->format('Y-m-d\TH:i')) }}"
+                        >
+                    <label 
+                        for="hs-floating-gray-input-beginDate" 
+                        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                        peer-focus:text-xs
+                        peer-focus:-translate-y-1.5
+                        peer-focus:text-gray-100
+                        peer-[:not(:placeholder-shown)]:text-xs
+                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                        peer-[:not(:placeholder-shown)]:text-gray-100"
+                    >
+                        Begin Date
+                    </label>
+                    @error('beginDate')
+                        <p class="text-red-500 text-xs mt-1 ms-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="relative w-full px-1">
+                    <input 
+                        name="endDate"
+                        type="datetime-local" 
+                        id="hs-floating-gray-input-endDate" 
+                        class="peer p-4 block w-full bg-gray-100 border-transparent rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-700 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600
+                        focus:pt-6
+                        focus:pb-2
+                        [&:not(:placeholder-shown)]:pt-7
+                        [&:not(:placeholder-shown)]:pb-2
+                        autofill:pt-6
+                        autofill:pb-2" 
+                        placeholder="input date here"
+                        value="{{ old('tanggal', now()->format('Y-m-d\TH:i')) }}"
+                        >
+                    <label 
+                        for="hs-floating-gray-input-endDate" 
+                        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                        peer-focus:text-xs
+                        peer-focus:-translate-y-1.5
+                        peer-focus:text-gray-100
+                        peer-[:not(:placeholder-shown)]:text-xs
+                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                        peer-[:not(:placeholder-shown)]:text-gray-100"
+                    >
+                        End Date
+                    </label>
+                    @error('endDate')
+                        <p class="text-red-500 text-xs mt-1 ms-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="relative w-full px-1">
+                    <select 
+                        name="type"
+                        id="hs-floating-gray-input-type" 
+                        class="peer p-4 block w-full bg-gray-100 border-transparent rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-700 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600
+                        focus:pt-6
+                        focus:pb-2
+                        [&:not(:placeholder-shown)]:pt-7
+                        [&:not(:placeholder-shown)]:pb-2
+                        autofill:pt-6
+                        autofill:pb-2" 
+                        placeholder="input date here"
+                        >
+                        <option value="all">All</option>
+                        <option value="in">In</option>
+                        <option value="out">Out</option>
+                    </select>
+                    <label 
+                        for="hs-floating-gray-input-type" 
+                        class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                        peer-focus:text-xs
+                        peer-focus:-translate-y-1.5
+                        peer-focus:text-gray-100
+                        peer-[:not(:placeholder-shown)]:text-xs
+                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                        peer-[:not(:placeholder-shown)]:text-gray-100"
+                    >
+                        Transaction Type
+                    </label>
+                </div>
+                {{-- end tanggal export --}}
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+                <div class="ps-4">
+                    <button
+                        type="submit"
+                        class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-green-700 rounded-md hover:bg-green-900 focus:outline-none focus:ring focus:border-green-800 dark:bg-green-700 dark:hover:bg-green-900 dark:focus:outline-none dark:focus:ring dark:focus:border-green-800"
+                        >
+                        Download Data
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+    </x-modal>
 </x-app-layout>

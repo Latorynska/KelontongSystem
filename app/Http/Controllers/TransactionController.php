@@ -174,6 +174,35 @@ class TransactionController extends Controller
         return $pdf->stream("transaction_report_branch_".$branch->name."_".$beginDate."_to_".$endDate.".pdf");
     }
 
+    public function printAll(Request $request){
+        $validated = $request->validate([
+            'beginDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:beginDate',
+            'type' => 'nullable|in:all,in,out',
+        ]);
+        
+        $beginDate = $validated['beginDate'];
+        $endDate = $validated['endDate'];
+        $user = auth()->user();
+
+        $branches = Branch::where('owner_id', $user->id)
+        ->with('transactions.transactionDetails', 'transactions.user')
+        ->get();
+        $branches->each(function ($branch) {
+            $branch->transactions->each(function ($transaction) {
+                $transaction->totalPrice = $transaction->totalPrice();
+                $transaction->userName = $transaction->user->name;
+            });
+        });
+        $data['branch'] = $branches;
+        $data['beginDate'] = $beginDate;
+        $data['endDate'] = $endDate;
+        
+        // dd($data);
+        $pdf = PDF::loadView('transaction.printAll', $data);
+        return $pdf->stream("transaction_report_".$beginDate."_to_".$endDate.".pdf");
+    }
+
 
     /**
      * Show the form for editing the specified resource.
